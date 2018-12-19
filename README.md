@@ -22,7 +22,7 @@ A web scraper that I am working on as a hobby project.
 
 3) Make the program text the user in case a better offer is found.
 
-### PHase 3:
+### Phase 3:
 
 1) Set up the program so that it requires an activation code before it is run. At first, have Google Authenticator, or another similar app, provide the code.
 
