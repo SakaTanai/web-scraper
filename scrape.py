@@ -2,6 +2,25 @@
 import requests, re
 from bs4 import BeautifulSoup
 
+# A function to remove whitespaces from a list. It returns a well formatted list, without newlines or unnecessary
+# whitespaces.
+def format(list):
+    list_sorted = []
+    for title in list:
+        new_title = title.replace('\n', '')
+        new_title = new_title.lstrip()
+        new_title = new_title.rstrip()
+        list_sorted.append(new_title)
+    return list_sorted
+
+# A function that gets the title information with tags and returns just the text.
+def title_text(list):
+    new_list = []
+    for product in product_titles_not_sorted:
+        for title in product.descendants:
+            new_list.append(title)
+    return new_list
+
 # Collect the information from the page.
 url = 'https://www.emag.ro/laptopuri/sort-priceasc/p2/c'    # store the URL in a variable for easier reading
 page = requests.get(url)    # collect the information from the site at the url variable
@@ -17,23 +36,10 @@ product_titles_not_sorted = soup.find_all('a', class_='product-title js-product-
 
 # Create the list that where the product titles will be kept. This list is full of whitespaces and
 # newlines that must be deleted. Hence, it is only temporary.
-product_titles_sorted_spaces = []
-
-# Sort the information and save it in a list.
-for product in product_titles_not_sorted:
-    for title in product.descendants:
-        product_titles_sorted_spaces.append(title)
+product_titles_sorted_spaces = title_text(product_titles_not_sorted)
 
 # Create the final list that holds titles. This list will later be exported.
-product_titles_sorted = []
-
-# Remove whitespaces from the list. Each new_title iteration is the last new_title iteration + an additional change.
-for title in product_titles_sorted_spaces:
-    new_title_1 = title.replace('\n', '')
-    new_title_2 = new_title_1.lstrip()
-    new_title_3 = new_title_2.rstrip()
-    product_titles_sorted.append(new_title_3)
-
+product_titles_sorted = format(product_titles_sorted_spaces)
 
 # Get the price information for all the products on the page. This information is raw and needs to be filtered.
 product_prices = soup.find_all(class_="product-new-price")
@@ -60,15 +66,12 @@ for product in product_prices:
 # Append the prices to the list.
     price_list.append(price)
 
-print(price_list)
-
 """
 TO DO:
 
-1) See if X.get_text() works on the item titles. This can save a ton of space.
-2) First optimisation steps: create functions for similar code blocks.
-3) Export the lists to a file and start working with that file.
-4) Write the code for getting data from other sites as well.
-5) Try and compare the products from different sites. Just compare the prices, to see if it works.
-6) Follow the TO DO in the readme for further instructions.
+1) See how to optimise / write as a function the last for loop.
+2) Export the lists to a file and start working with that file.
+3) Write the code for getting data from other sites as well.
+4) Try and compare the products from different sites. Just compare the prices, to see if it works.
+5) Follow the TO DO in the readme for further instructions.
 """
