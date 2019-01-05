@@ -1,5 +1,5 @@
 # Import the libraries that we are going to use for scraping the web.
-import requests, re
+import requests, re, csv
 from bs4 import BeautifulSoup
 
 # Create the regex that will be used for deleting unnecessary formatting from the list.
@@ -40,6 +40,14 @@ def price_filter(list):
         new_list.append(price)
     return new_list
 
+# A function that writes the information in the lists in a CSV file.
+def export(title_list, price_list, file_name):
+    for i in range (len(title_list)):
+        title = title_list[i]
+        price = price_list[i]
+        file_name.writerow([title, price])
+
+
 # Collect the information from the pages.
 url_emag = 'https://www.emag.ro/laptopuri/sort-priceasc/p2/c'    # store the URL in a variable for easier reading
 emag = requests.get(url_emag)    # collect the information from the site at the url variable
@@ -75,9 +83,16 @@ altex_product_prices = soup_altex.find_all(class_='Price-current')
 emag_price_list = price_filter(emag_product_prices)
 altex_price_list = price_filter(altex_product_prices)
 
+# Open the CSV file where the information will be exported to.
+file = csv.writer(open('products_emag.csv', 'w'))
+
+# Export the list information into the CSV file.
+export(emag_product_titles_sorted, emag_price_list, file)
+
 """
 TO DO:
-1) Export the lists to a file and start working with that file.
+1) Export the lists to a file and start working with that file. (Export done. See how to work with info directly from
+   the file. - see https://realpython.com/python-csv/)
 2) Write the code for getting data from other sites as well. (half-done)
 3) Try and compare the products from different sites. Just compare the prices, to see if it works.
 4) Follow the TO DO in the readme for further instructions.
