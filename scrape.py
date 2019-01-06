@@ -79,20 +79,24 @@ emag_price_list = price_filter(emag_product_prices)
 altex_price_list = price_filter(altex_product_prices)
 
 # Open the CSV file where the information will be exported to.
-emag_file = csv.writer(open('products_emag.csv', 'w', newline = ''))
-altex_file = csv.writer(open('products_altex.csv', 'w', newline = ''))
-
+with open('products_emag.csv', 'w', newline = '') as file:
+    emag_file = csv.writer(file)
 # Export the list information into the CSV file.
-export(emag_product_titles_sorted, emag_price_list, emag_file)
-export(altex_product_titles_sorted, altex_price_list, altex_file)
+    export(emag_product_titles_sorted, emag_price_list, emag_file)
 
-read_emag_file = csv.reader(open('products_emag.csv'))
-read_altex_file = csv.reader(open('products_altex.csv'))
+with open('products_altex.csv', 'w', newline = '') as file:
+    altex_file = csv.writer(file)
+    export(altex_product_titles_sorted, altex_price_list, altex_file)
 
-for row in read_emag_file:
-    print(row)
-for row in read_altex_file:
-    print(row)
+with open('products_altex.csv', 'r') as file:
+    altex_file = csv.reader(file)
+    for row in altex_file:
+        print(row)
+
+with open('products_emag.csv', 'r') as file:
+    emag_file = csv.reader(file)
+    for row in emag_file:
+        print(row)
 
 """
 TO DO:
