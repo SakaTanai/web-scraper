@@ -42,11 +42,10 @@ def price_filter(list):
 
 # A function that writes the information in the lists in a CSV file.
 def export(title_list, price_list, file_name):
-    for i in range (len(title_list)):
+    for i in range(len(title_list)):
         title = title_list[i]
         price = price_list[i]
         file_name.writerow([title, price])
-
 
 # Collect the information from the pages.
 url_emag = 'https://www.emag.ro/laptopuri/sort-priceasc/p2/c'    # store the URL in a variable for easier reading
@@ -55,13 +54,9 @@ emag = requests.get(url_emag)    # collect the information from the site at the 
 url_altex = 'https://altex.ro/laptopuri/cpl/filtru/order/price/dir/asc/p/2/'
 altex = requests.get(url_altex)
 
-
 # Create the BeautifulSoup Objects to parse the data from the page request.
 soup_emag = BeautifulSoup(emag.text, 'html.parser')
 soup_altex = BeautifulSoup(altex.text, 'html.parser')
-
-# Continue with the project:
-# https://www.digitalocean.com/community/tutorials/how-to-scrape-web-pages-with-beautiful-soup-and-python-3
 
 # Get the title information for all the products on the page. This information needs to be sorted.
 emag_product_titles_not_sorted = soup_emag.find_all('a', class_='product-title js-product-url')
@@ -84,10 +79,18 @@ emag_price_list = price_filter(emag_product_prices)
 altex_price_list = price_filter(altex_product_prices)
 
 # Open the CSV file where the information will be exported to.
-file = csv.writer(open('products_emag.csv', 'w'))
+emag_file = csv.writer(open('products_emag.csv', 'w', newline = ''))
+altex_file = csv.writer(open('products_altex.csv', 'w', newline = ''))
 
 # Export the list information into the CSV file.
-export(emag_product_titles_sorted, emag_price_list, file)
+export(emag_product_titles_sorted, emag_price_list, emag_file)
+export(altex_product_titles_sorted, altex_price_list, altex_file)
+
+read_emag_file = csv.reader(open('products_emag.csv'))
+read_altex_file = csv.reader(open('products_altex.csv'))
+
+for row in read_altex_file:
+    print(row)
 
 """
 TO DO:
