@@ -89,6 +89,8 @@ export(altex_product_titles_sorted, altex_price_list, altex_file)
 read_emag_file = csv.reader(open('products_emag.csv'))
 read_altex_file = csv.reader(open('products_altex.csv'))
 
+for row in read_emag_file:
+    print(row)
 for row in read_altex_file:
     print(row)
 
