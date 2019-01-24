@@ -13,15 +13,37 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-291852642">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="1630" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="1630" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scrape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="107" column="51" lean-forward="true" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="51" />
+            <state relative-caret-position="440">
+              <caret line="121" column="33" selection-start-line="121" selection-start-column="33" selection-end-line="121" selection-end-column="33" />
               <folding>
                 <element signature="e#70#94#0" expanded="true" />
+                <marker date="1548365298150" expanded="true" signature="2466:2576" ph="..." />
               </folding>
             </state>
           </provider>
@@ -57,6 +79,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -68,7 +91,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -140,13 +162,13 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10115912" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10115912" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32683983" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39935064" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3264642" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32861635" />
@@ -159,6 +181,9 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
@@ -170,10 +195,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scrape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="107" column="51" lean-forward="true" selection-start-line="107" selection-start-column="51" selection-end-line="107" selection-end-column="51" />
+        <state relative-caret-position="440">
+          <caret line="121" column="33" selection-start-line="121" selection-start-column="33" selection-end-line="121" selection-end-column="33" />
           <folding>
             <element signature="e#70#94#0" expanded="true" />
+            <marker date="1548365298150" expanded="true" signature="2466:2576" ph="..." />
           </folding>
         </state>
       </provider>

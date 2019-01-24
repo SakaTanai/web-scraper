@@ -61,6 +61,14 @@ def evolio_sort(list):
         new_list.append(list[i])
     return new_list
 
+# A function that sorts the product titles on Flanco. The normal sorting function doesn't work for this site.
+# We'll write a function similar to evolio_sort.
+def flanco_sort(list):
+    new_list = []
+    for i in range(1, len(list), 2):
+        new_list.append(list[i])
+    return new_list
+
 # Collect the information from the pages.
 url_emag = 'https://www.emag.ro/laptopuri/sort-priceasc/p2/c'    # store the URL in a variable for easier reading
 emag = requests.get(url_emag)    # collect the information from the site at the url variable
@@ -71,33 +79,47 @@ altex = requests.get(url_altex)
 url_evolio = 'https://www.evolioshop.com/ro/smartwatch.html?dir=asc&order=price'
 evolio = requests.get(url_evolio)
 
+url_flanco = 'https://www.flanco.ro/laptop-it-tablete/laptop-2-in-1/dir/asc/order/price.html'
+flanco = requests.get(url_flanco)
+
 # Create the BeautifulSoup Objects to parse the data from the page request.
 soup_emag = BeautifulSoup(emag.text, 'html.parser')
 soup_altex = BeautifulSoup(altex.text, 'html.parser')
 soup_evolio = BeautifulSoup(evolio.text, 'html.parser')
+soup_flanco = BeautifulSoup(flanco.text, 'html.parser')
 
 # Get the title information for all the products on the page. This information needs to be sorted.
 emag_product_titles_not_sorted = soup_emag.find_all('a', class_='product-title js-product-url')
 altex_product_titles_not_sorted = soup_altex.find_all('a', class_='Product-name ')
 evolio_product_titles_not_sorted = soup_evolio.find_all('h2')
+flanco_product_titles_not_sorted = soup_flanco.find_all('a', class_='product-new-link')
 
 # Create the list that where the product titles will be kept. This list is full of whitespaces and
 # newlines that must be deleted. Hence, it is only temporary.
 emag_product_titles_sorted_spaces = title_text(emag_product_titles_not_sorted)
 altex_product_titles_sorted = title_text(altex_product_titles_not_sorted)
 evolio_product_titles_sorted_raw = title_text(evolio_product_titles_not_sorted)
+flanco_product_titles_sorted_raw = title_text(flanco_product_titles_not_sorted)
 
-# Create another intermediary list that sorts through the raw data from Evolio.
+# Create another intermediary list that sorts through the raw data from Evolio and Flanco.
 evolio_product_titles_sorted_spaces = evolio_sort(evolio_product_titles_sorted_raw)
+flanco_product_titles_sorted_spaces = flanco_sort(flanco_product_titles_sorted_raw)
 
 # Create the final list that holds titles. This list will later be exported.
 emag_product_titles_sorted = format(emag_product_titles_sorted_spaces)
 evolio_product_titles_sorted = format(evolio_product_titles_sorted_spaces)
+flanco_product_titles_sorted = format(flanco_product_titles_sorted_spaces)
 
 # Get the price information for all the products on the page. This information is raw and needs to be filtered.
 emag_product_prices = soup_emag.find_all(class_='product-new-price')
 altex_product_prices = soup_altex.find_all(class_='Price-current')
 evolio_product_prices_raw = soup_evolio.find_all(class_= re.compile("price special-price product-price"))
+flanco_product_prices_raw = soup_flanco.find_all(class_='price')
+
+for price in flanco_product_prices_raw:
+    for product in price.descendants:
+        print(product)
+        print('/////*******//////')
 
 # Use the function that sorts titles in order to sort the prices in the same manner. Then, use the function that
 # formats titles in order to format the price.
