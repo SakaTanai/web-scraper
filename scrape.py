@@ -114,12 +114,14 @@ flanco_product_titles_sorted = format(flanco_product_titles_sorted_spaces)
 emag_product_prices = soup_emag.find_all(class_='product-new-price')
 altex_product_prices = soup_altex.find_all(class_='Price-current')
 evolio_product_prices_raw = soup_evolio.find_all(class_= re.compile("price special-price product-price"))
-flanco_product_prices_raw = soup_flanco.find_all(class_='price')
+flanco_product_prices_raw = soup_flanco.find_all(class_='produs-price')
 
 for price in flanco_product_prices_raw:
-    for product in price.descendants:
-        print(product)
-        print('/////*******//////')
+    test = price.find_all(class_='price')
+    for price_2 in test:
+        for price_3 in price_2.descendants:
+            print(price_3)
+            print('///////********//////////')
 
 # Use the function that sorts titles in order to sort the prices in the same manner. Then, use the function that
 # formats titles in order to format the price.
