@@ -2,13 +2,13 @@
 
 A web scraper that I am working on as a hobby project.
 
-## Current version: Version 0 - Plannning
+## Current version: Version 0.5 - Phase 1
 
 ### Phase 1:
 
-1) Be able to open websites and extract the information.
+1) Be able to open websites and extract the information. (DONE)
 
-2) Export the information into a table.
+2) Export the information into a CSV file. (DONE)
 
 3) Have the program compare prices for the same product on multiple websites and also compare against own prices.
 
