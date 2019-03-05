@@ -2,7 +2,7 @@
 
 A web scraper that I am working on as a hobby project.
 
-## Current version: Version 0.5 - Phase 1
+## Current version: Version 1 - Phase 1 Finished
 
 ### Phase 1:
 
