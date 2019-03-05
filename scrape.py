@@ -1,9 +1,12 @@
 # Import the libraries that we are going to use for scraping the web.
-import requests, re, csv
+import requests, re, csv, time
 from bs4 import BeautifulSoup
 
 # Create the regex that will be used for deleting unnecessary formatting from the list.
 price_regex = re.compile(r'\W')
+
+# Create the regex that will be used for searching the title of the product on other sites.
+title_regex = re.compile(r'[\w\s-]*')
 
 # A function to remove whitespaces from a list. It returns a well formatted list, without newlines or unnecessary
 # whitespaces.
@@ -28,25 +31,25 @@ def title_text(list):
 def price_filter(list):
     new_list = []
     for product in list:
-# Create a price backup so as not to mess with the iterator. Then eliminate the information held between the 'span'
-# tags. We only need the numbers for the prices.
+    # Create a price backup so as not to mess with the iterator. Then eliminate the information held between the 'span'
+    # tags. We only need the numbers for the prices.
         price = product
-# Get the prices and format them nicely.
+    # Get the prices and format them nicely.
         try:
             price = price.get_text()
         except AttributeError:
             pass
         price = price_regex.sub('', price)
         price = price[:len(price) - 3]
-        price = price[:len(price)-2] + ',' + price[len(price)-2:]
-# Append the prices to the list.
+        price = price[:len(price)-2] + '.' + price[len(price)-2:]
+    # Append the prices to the list.
         new_list.append(price)
     return new_list
 
 # A function that writes the information in the lists in a CSV file.
 def export(file_title, title_list, price_list):
     # Open the CSV file where the information will be exported to.
-    with open(file_title, 'w+', newline='') as file:
+    with open(file_title, 'a+', newline='', encoding = 'utf-8') as file:
         file_name = csv.writer(file)
         for i in range(len(title_list)):
             title = title_list[i]
@@ -83,9 +86,15 @@ def flanco_sort_prices(list):
 # A function that filters the raw prices pulled by the function above.
 def flanco_price_filter(list):
     new_list = []
+    final_list = []
     for i in range(0, len(list), 4):
         new_list.append(list[i] + list[i+2])
-    return new_list
+    for item in new_list:
+        price = item
+        price = price_regex.sub('', price)
+        price = price[:len(price) - 2] + '.' + price[len(price) - 2:]
+        final_list.append(price)
+    return final_list
 
 # A function that puts together all the other code, to minimize repetition in the program. The parameters are
 # self-explanatory, except for store_value. We assign a numerical value to each store - that is 0 for
@@ -132,43 +141,144 @@ def create_file(link, soup_attribute, title_class, price_class, product_type, st
     # Use the Flanco function that sorts prices in order to append the unfiltered prices to a new list.
     elif (store_value == 2):
         store_product_prices = flanco_sort_prices(store_product_prices)
+        store_price_list = flanco_price_filter(store_product_prices)
 
-    # Create the list that will hold the prices.
-    store_price_list = price_filter(store_product_prices)
+    # Create the list that will hold the prices. We don't run this function for the Flanco prices, as we already
+    # run the required functions in the above elif.
+    if (store_value != 2):
+        store_price_list = price_filter(store_product_prices)
 
     # Call the function to export the information from the lists into a CSV file.
     export(product_type + '_' + store_name + '.csv', store_product_titles_sorted, store_price_list)
 
-# Call the function to create the files for Emag and Altex. This will come in handy for scraping off of multiple pages
+# A function that compares two CSV files and writes an entry to a third CSV file every time it finds a product from the
+# second file (that is, from the second website) that is cheaper than the same product from the first file (that is,
+# the first website.)
+def cmp_sites(first_file_name, second_file_name, second_store_name):
+    product_list = []    # the list that will hold the products that are cheaper on the competitor's site before
+                         # exporting this data to the CSV file.
+    with open(first_file_name + '.csv', 'r', encoding = 'utf-8') as first_file:
+        first_store_file = csv.reader(first_file)
+        for row_first_file in first_store_file:
+            with open(second_file_name + '.csv', 'r', encoding = 'utf-8') as second_file:
+                second_store_file = csv.reader(second_file)
+                for row_second_file in second_store_file:
+                    # We hold the product title from the first store into the variable called "string."
+                    string = title_regex.search(row_first_file[0]).group(0)
+                    product_regex = re.compile(string)
+                    # The if-statement below says that "If you find this text somewhere in the title of the second
+                    # file's product, execute the code.
+                    if(product_regex.search(row_second_file[0])):
+                        # Compare the prices from the first and the scond site.
+                        if (float(row_second_file[1]) < float(row_first_file[1])):
+                            # So as to avoid duplicates as much as possible, checks to see whether the product title
+                            # is already in the list. If it is, it starts looking through the next row. If it isn't,
+                            # it writes the info in the temporary list that will later be exported.
+                            if any(row_first_file[0] in items for items in product_list):
+                                continue
+                            else:
+                                product_list.append([row_first_file[0] + ' is pricier than on ' + second_store_name
+                                                     + '.', row_first_file[1] + ' vs. ' + row_second_file[1]])
+
+    # Export the data to results.csv.
+    with open('results.csv', 'a+', encoding = 'utf-8') as file:
+        file_name = csv.writer(file)
+        for item in product_list:
+            file_name.writerow([item[0], item[1]])
+
+
+# Call the function to create the files for the stores. This will come in handy for scraping off of multiple pages
 # of products on the same site.
-create_file('https://www.emag.ro/laptopuri/sort-priceasc/p2/c', 'a', 'product-title js-product-url',
-            'product-new-price', 'laptops', 'emag', 0)
 
-create_file('https://altex.ro/laptopuri/cpl/filtru/order/price/dir/asc/p/2/', 'a', 'Product-name ', 'Price-current',
-            'laptops', 'altex', 0)
+    # The code sends a request for each page of the site. Inside range(x, y), x = the page where you want to start
+    # scraping, and y - 1 = the page where you want to finish scraping. It is recommended not to include more pages than
+    # absolutely necessary. This means including pages only until you have reached the price-point of the priciest
+    # product on your website. The time.sleep(x) function tells the for-loop to wait for X seconds before iterating
+    # again. Furthermore, we will not search through all the categories of one website at a time. Instead, for each
+    # category of products, we will go through each site separately. This way we avoid the risk of damaging the host's
+    # servers, which would lead to us being denied access.
 
-create_file('https://www.evolioshop.com/ro/smartwatch.html?dir=asc&order=price', 'h2', 0,
-            re.compile("price special-price product-price"), 'smartwatches', 'evolio', 1 )
+# Function calls for electric vehicles. -------------------------------------------------------------
+for page_number in range(1, 2):
+    create_file('https://www.evolioshop.com/ro/vehicule-electrice.html?dir=asc&order=price&p=' + str(page_number),
+                'h2', 0, re.compile("price special-price product-price"), 'vehicule-electrice', 'evolio', 1)
+    time.sleep(3)
 
-create_file('https://www.flanco.ro/laptop-it-tablete/laptop-2-in-1/dir/asc/order/price.html', 'a', 'product-new-link',
-            'produs-price', 'laptops', 'flanco', 2)
+for page_number in range(1, 18):
+    create_file('https://www.emag.ro/vehicule-electrice/sort-priceasc/p' + str(page_number) + '/c', 'a',
+                'product-title js-product-url', 'product-new-price', 'vehicule-electrice', 'emag', 0)
+    time.sleep(3)
+
+for page_number in range(1, 3):
+    create_file('https://altex.ro/vehicule-electrice/cpl/filtru/order/price/dir/asc/p/' + str(page_number) + '/', 'a',
+            'Product-name ', 'Price-current', 'vehicule-electrice', 'altex', 0)
+    time.sleep(3)
+
+for page_number in range(1, 2):
+    create_file('https://www.flanco.ro/sport-camping/vehicule-electrice/dir/asc/order/price/p/' + str(page_number)
+                + '.html', 'a', 'product-new-link', 'produs-price', 'vehicule-electrice', 'flanco', 2)
+    time.sleep(3)
 
 
-"""
-with open('products_altex.csv', 'r') as altex_file_raw:
-    altex_file = csv.reader(altex_file_raw)
-    for row_altex in altex_file:
-        with open('products_emag.csv', 'r') as file:
-            emag_file = csv.reader(file)
-            for row_emag in emag_file:
-                print(row_altex)
-"""
+# Function calls for sport camera. ------------------------------------------------------------------
+for page_number in range(1, 2):
+    create_file('https://www.evolioshop.com/ro/camere-video-sport.html?dir=asc&order=price&p=' + str(page_number),
+                'h2', 0, re.compile("price special-price product-price"), 'camere-sport', 'evolio', 1)
+    time.sleep(3)
 
-"""
-TO DO:
+for page_number in range(1, 7):
+    create_file('https://www.emag.ro/camere-video-sport/p' + str(page_number) + '/c', 'a',
+                'product-title js-product-url', 'product-new-price', 'camere-sport', 'emag', 0)
+    time.sleep((3))
 
-1) Go through all of the pages on each site, and dynamically create a new CSV file for each page. We do this to limit
-   how much time we spend on looking for the right product.
-2) Try and compare the products from different sites. Just compare the prices, to see if it works.
-3) Follow the TO DO in the readme for further instructions.
-"""
+for page_number in range(1, 2):
+    create_file('https://altex.ro/camere-video-sport/cpl/filtru/order/price/dir/asc/p/' + str(page_number) + '/', 'a',
+            'Product-name ', 'Price-current', 'camere-sport', 'altex', 0)
+    time.sleep(3)
+
+for page_number in range(1, 2):
+    create_file('https://www.flanco.ro/tv-electronice-foto/foto-video/camere-video-sport/dir/asc/order/price/p/' +
+                str(page_number) + '.html', 'a', 'product-new-link', 'produs-price', 'camere-sport', 'flanco', 2)
+    time.sleep(3)
+
+
+# Function calls for drones. -------------------------------------------------------------------------
+for page_number in range(1, 2):
+    create_file('https://www.evolioshop.com/ro/drone.html?dir=asc&order=price&p=' + str(page_number),
+                'h2', 0, re.compile("price special-price product-price"), 'drone', 'evolio', 1)
+    time.sleep(3)
+
+for page_number in range(1, 3):
+    create_file('https://www.emag.ro/drone/sort-priceasc/p' + str(page_number) + '/c', 'a',
+                'product-title js-product-url', 'product-new-price', 'drone', 'emag', 0)
+    time.sleep((3))
+
+for page_number in range(1, 2):
+    create_file('https://altex.ro/drone/cpl/filtru/order/price/dir/asc//p/' + str(page_number) + '/', 'a',
+            'Product-name ', 'Price-current', 'drone', 'altex', 0)
+    time.sleep(3)
+
+
+# Function calls for smartwatches. -------------------------------------------------------------------
+for page_number in range(1, 2):
+    create_file('https://www.evolioshop.com/ro/smartwatch.html?dir=asc&order=price&p=' + str(page_number),
+                'h2', 0, re.compile("price special-price product-price"), 'smartwatch', 'evolio', 1)
+    time.sleep(3)
+
+for page_number in range(1, 30):
+    create_file('https://www.emag.ro/smartwatch/sort-priceasc/p' + str(page_number) + '/c', 'a',
+                'product-title js-product-url', 'product-new-price', 'smartwatch', 'emag', 0)
+    time.sleep((3))
+
+for page_number in range(1, 4):
+    create_file('https://altex.ro/smartwatches/cpl/filtru/order/price/dir/asc/p/' + str(page_number) + '/', 'a',
+            'Product-name ', 'Price-current', 'smartwatch', 'altex', 0)
+    time.sleep(3)
+
+for page_number in range(1, 2):
+    create_file('https://www.flanco.ro/telefoane-tablete/smartwatch-si-smartband/smartwatch/dir/asc/order/price/p/' +
+                str(page_number) + '.html', 'a', 'product-new-link', 'produs-price', 'smartwatch', 'flanco', 2)
+    time.sleep(3)
+
+# Function calls for comparing the products on different sites.
+cmp_sites('vehicule-electrice_evolio', 'vehicule-electrice_emag', 'Emag')

@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ee252788-6511-4b6e-9e14-5efad03bd6d9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products_altex.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products_emag.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/products_evolio.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scrape.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrape.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,10 +16,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scrape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="354">
-              <caret line="148" lean-forward="true" selection-start-line="148" selection-end-line="148" />
+            <state relative-caret-position="4811">
+              <caret line="283" column="73" lean-forward="true" selection-start-line="283" selection-start-column="73" selection-end-line="283" selection-end-column="73" />
               <folding>
-                <element signature="e#70#94#0" expanded="true" />
+                <element signature="e#70#100#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -50,6 +46,12 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>price_filter</find>
+      <find>encoding</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -72,6 +74,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -83,7 +86,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -164,7 +166,7 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32861635" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32792208" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32861635" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
@@ -175,6 +177,16 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/scrape.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4811">
+          <caret line="283" column="73" lean-forward="true" selection-start-line="283" selection-start-column="73" selection-end-line="283" selection-end-column="73" />
+          <folding>
+            <element signature="e#70#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -182,16 +194,6 @@
             <caret line="4" column="41" selection-start-line="4" selection-start-column="41" selection-end-line="4" selection-end-column="41" />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="148" lean-forward="true" selection-start-line="148" selection-end-line="148" />
-          <folding>
-            <element signature="e#70#94#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
